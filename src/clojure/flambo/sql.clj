@@ -1,17 +1,22 @@
 ;;
 ;; SparkSQL & DataFrame wrapper
 ;;
+
 (ns flambo.sql
   (:refer-clojure :exclude [load group-by partition-by count])
 
   (:require [flambo.api :as f :refer [defsparkfn]]
-            [flambo.sql-functions :as sqlf])
+            [flambo.sql-functions :as sqlf]
+            [flambo.session :as session]
+            )
 
-      (:import [org.apache.spark.api.java JavaSparkContext]
+  (:import [org.apache.spark.api.java JavaSparkContext]
            [org.apache.spark.sql SQLContext Row Dataset Column]
            [org.apache.spark.sql.hive HiveContext]
            [org.apache.spark.sql.expressions Window]
-           [org.apache.spark.sql.types DataTypes]))
+           [org.apache.spark.sql.types DataTypes]
+           [org.apache.spark.sql SaveMode]
+           ))
 
 ;; ## SQLContext
 
@@ -200,12 +205,52 @@
         (recur (inc i) (conj! v (.get row i)))
         (persistent! v)))))
 
-
-(def show (memfn show))
+(defn show
+  ([ds] (.show ds))
+  ([ds n] (.show ds n))
+  )
 
 (def count (memfn count))
 
-(def create-global-temp-view (memfn createGlobalTempView))
+(def create-global-temp-view
+  (memfn createGlobalTempView view-name))
 
-(defn create-or-replace-temp-view [v-name]
-  (.createOrReplaceTempView v-name))
+(def create-or-replace-temp-view
+  (memfn createOrReplaceTempView view-name))
+
+
+;; (defn write-parquet [df file-name]
+;;   (-> df
+;;       .write
+;;       (.parquet file-name)))
+
+(defn write-parquet
+  [df file-name
+   &{:keys [mode]
+     :or {mode "default"}}
+   ]
+  (-> df
+      .write
+      (.mode
+       (case mode
+         "error" SaveMode/ErrorIfExists
+         "append" SaveMode/Append
+         "overwrite" SaveMode/Overwrite
+         ;;"ignore" SaveModeIgnore
+         SaveMode/ErrorIfExists)
+       )
+      (.parquet file-name)))
+
+(defn read-parquet [sc file-name]
+  (-> sc
+      .read
+      (.parquet file-name)))
+
+(defn get-spark-session
+  [name &{:keys [master]
+          :or {master "local[*]"}}]
+  (->
+   (session/session-builder)
+   (session/app-name name)
+   (session/master master)
+   session/get-or-create))

@@ -32,7 +32,10 @@
                [org.apache.spark/spark-streaming_2.11 "2.2.0"]
                [org.apache.spark/spark-streaming-kafka-0-8_2.11 "2.2.0"]
                [org.apache.spark/spark-sql_2.11 "2.2.0"]
-               [org.apache.spark/spark-hive_2.11 "2.2.0"]]}
+               [org.apache.spark/spark-hive_2.11 "2.2.0"]
+               [org.apache.spark/spark-mllib_2.11 "2.2.0"]
+
+               ]}
              :clojure-1.6
              {:dependencies [[org.clojure/clojure "1.6.0"]]}
              :clojure-1.7
