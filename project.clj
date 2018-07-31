@@ -7,17 +7,17 @@
                  :archive "https://groups.google.com/d/forum/flambo-user"
                  :post "flambo-user@googlegroups.com"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/tools.logging "0.3.1"]
-                 [com.google.guava/guava "18.0"]
+                 [org.clojure/tools.logging "0.4.1"]
+                 [com.google.guava/guava "23.0"]
                  [yieldbot/serializable-fn "0.1.2"
                   :exclusions [com.twitter/chill-java]]
                  [com.twitter/carbonite "1.5.0"
                   :exclusions [com.twitter/chill-java]]
-                 [com.twitter/chill_2.11 "0.8.0"
+                 [com.twitter/chill_2.11 "0.9.2"
                   :exclusions [org.scala-lang/scala-library]]]
   :profiles {:dev
-             {:dependencies [[midje "1.6.3"]
-                             [criterium "0.4.3"]]
+             {:dependencies [[midje "1.9.2"]
+                             [criterium "0.4.4"]]
               :plugins [[lein-midje "3.1.3"]
                         [michaelblume/lein-marginalia "0.9.0"]
                         ;; [codox "0.8.9"]
@@ -28,13 +28,12 @@
                     flambo.example.tfidf]}
              :provided
              {:dependencies
-              [[org.apache.spark/spark-core_2.11 "2.3.1"]
-               [org.apache.spark/spark-streaming_2.11 "2.3.1"]
-               [org.apache.spark/spark-streaming-kafka-0-8_2.11 "2.3.1"
-                ]
-               [org.apache.spark/spark-sql_2.11 "2.3.1"]
-               [org.apache.spark/spark-hive_2.11 "2.3.1"]
-               [org.apache.spark/spark-mllib_2.11 "2.3.1"]
+              [[org.apache.spark/spark-core_2.11 "2.3.1" :exclusions [commons-codec]]
+               [org.apache.spark/spark-streaming_2.11 "2.3.1" :exclusions [commons-codec]]
+               [org.apache.spark/spark-streaming-kafka-0-10_2.11 "2.3.1" :exclusions [commons-codec]]
+               [org.apache.spark/spark-sql_2.11 "2.3.1" :exclusions [commons-codec]]
+               [org.apache.spark/spark-hive_2.11 "2.3.1" :exclusions [commons-codec]]
+               [org.apache.spark/spark-mllib_2.11 "2.3.1" :exclusions [commons-codec]]
                ]}
              :clojure-1.6
              {:dependencies [[org.clojure/clojure "1.6.0"]]}
